@@ -179,22 +179,49 @@ function renderTableHome() {
 }
 
 function renderSelectPay() {
-  let unpaid = getUnpaidItems();
-  let paid = getPaidItems();
-  
+  // Group items by payment status
+  const unpaid = orderItems.filter(i => i.paidQuantity === 0);
+  const partial = orderItems.filter(i => i.paidQuantity > 0 && i.paidQuantity < i.quantity);
+  const paid = orderItems.filter(i => i.paidQuantity === i.quantity);
+
+  // Quick pay button handlers
+  function quickSelect(percent) {
+    selectedItems = [];
+    const items = [...unpaid, ...partial];
+    let totalUnpaid = items.reduce((sum, item) => sum + (item.quantity - item.paidQuantity), 0);
+    let toPay = percent === 1 ? totalUnpaid : Math.floor(totalUnpaid * percent);
+    items.forEach(item => {
+      let available = item.quantity - item.paidQuantity;
+      if (toPay > 0) {
+        let qty = Math.min(available, toPay);
+        if (qty > 0) selectedItems.push({ id: item.id, quantity: qty });
+        toPay -= qty;
+      }
+    });
+    render();
+  }
+
+  // Expose for inline use
+  window.quickSelect = quickSelect;
+
   return `
     <h1><i class="fas fa-shopping-cart" style="margin-right: 12px; color: var(--primary);"></i>Select Items</h1>
     <h2>Choose which items and quantities you'd like to pay for.</h2>
     
-    ${unpaid.length > 0 ? `
+    ${(unpaid.length + partial.length) > 0 ? `
       <div class="info">
         <i class="fas fa-info-circle"></i>
         Select items and quantities to pay for
       </div>
+      <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+        <button class="button secondary" style="flex:1;min-width:100px;" onclick="quickSelect(1)">Pay All</button>
+        <button class="button secondary" style="flex:1;min-width:100px;" onclick="quickSelect(0.5)">Pay 50%</button>
+        <button class="button secondary" style="flex:1;min-width:100px;" onclick="quickSelect(0.2)">Pay 20%</button>
+      </div>
     ` : ''}
     
     <ul class="order-list">
-      ${unpaid.map(item => {
+      ${[...unpaid, ...partial].map(item => {
         const unpaidQty = getUnpaidQuantity(item);
         const selectedQty = getSelectedQuantity(item.id);
         const totalQty = item.quantity;
@@ -212,15 +239,13 @@ function renderSelectPay() {
                 <br><small style="color: var(--text-secondary);">${paidQty} paid, ${unpaidQty} available</small>
               </span>
             </div>
-            <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
-              <div class="quantity-controls">
+            <div style="display: flex; flex-direction: column; align-items: flex-end; min-width: 110px;">
+              <div class="quantity-controls" style="flex-direction: row; align-items: center; gap: 8px; justify-content: flex-end;">
                 <button class="quantity-btn" onclick="decreaseQuantity(${item.id})" ${selectedQty <= 0 ? 'disabled' : ''}>-</button>
                 <span class="quantity-display">${selectedQty}</span>
                 <button class="quantity-btn" onclick="increaseQuantity(${item.id})" ${selectedQty >= unpaidQty ? 'disabled' : ''}>+</button>
               </div>
-              <div class="price-display ${selectedQty > 0 ? 'has-price' : 'no-price'}">
-                ${selectedQty > 0 ? formatMoney(item.price * selectedQty) : '$0.00'}
-              </div>
+              ${selectedQty > 0 ? `<div style='margin-top: 4px; font-size: 1rem; color: var(--success); font-weight: 600; text-align: right;'>${formatMoney(item.price * selectedQty)}</div>` : ''}
             </div>
           </li>
         `;

@@ -511,21 +511,6 @@ h2 {
   font-weight: 600;
 }
 
-.price-display {
-  min-width: 80px;
-  text-align: right;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.price-display.has-price {
-  color: var(--success);
-}
-
-.price-display.no-price {
-  color: transparent;
-}
-
 .payment-form {
   background: var(--bg-primary);
   border-radius: var(--radius-lg);
