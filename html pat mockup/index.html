@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pay at the Table - Modern Restaurant Experience</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Modern pay-at-table restaurant experience">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #D7263D;
+      --primary-light: #FF6B7A;
+      --primary-dark: #B01E2E;
+      --secondary: #FF7A00;
+      --secondary-light: #FFD2A6;
+      --success: #27AE60;
+      --success-light: #6FCF97;
+      --warning: #FF7A00;
+      --text-primary: #1A1A1A;
+      --text-secondary: #666666;
+      --text-muted: #888888;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F8F9FA;
+      --bg-tertiary: #F6F6F6;
+      --border: #E9ECEF;
+      --border-light: #F1F3F4;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.12);
+      --shadow-md: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-lg: 0 8px 25px rgba(0,0,0,0.08), 0 3px 10px rgba(0,0,0,0.04);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-soft: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff;
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      max-width: 375px;
+      margin: 0 auto;
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.85);
+      z-index: 0;
+      pointer-events: none;
+    }
+    .container {
+      padding: 24px 20px 20px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .button {
+      display: block;
+      width: 100%;
+      padding: 16px 24px;
+      margin: 16px 0 0 0;
+      background: #E3051B;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      position: relative;
+      overflow: hidden;
+      box-shadow: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .button:disabled {
+      background: #F8B9C1;
+      color: #fff;
+      cursor: not-allowed;
+    }
+    .button.secondary {
+      background: #fff;
+      color: #212121;
+      border: 2px solid #212121;
+      box-shadow: none;
+    }
+    .button.secondary:hover {
+      background: #f5f5f5;
+      color: #212121;
+    }
+    .button.text {
+      background: none;
+      color: #212121;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 500;
+      display: inline;
+      width: auto;
+    }
+    .button.text:hover {
+      text-decoration: underline;
+      background: none;
+    }
+
+    .header {
+      background: var(--bg-primary);
+      box-shadow: var(--shadow-sm);
+      padding: 20px 0 16px 0;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary), transparent);
+      opacity: 0.6;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .order-list {
+      margin: 24px 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .order-card {
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: var(--transition-soft);
+      border: 1px solid var(--border-light);
+    }
+
+    .order-card:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .order-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .order-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .order-price {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .status-tag {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      color: white;
+      min-width: 60px;
+      text-align: center;
+      display: inline-block;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    .paid {
+      background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
+    }
+
+    .unpaid {
+      background: linear-gradient(135deg, var(--warning) 0%, var(--secondary-light) 100%);
+    }
+
+    .checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      margin-right: 16px;
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      cursor: pointer;
+      background: var(--bg-primary);
+      transition: var(--transition-soft);
+    }
+
+    .checkbox.checked {
+      background: var(--primary);
+      border-color: var(--primary);
+      animation: checkmarkSoft 0.4s ease-out;
+    }
+
+    @keyframes checkmarkSoft {
+      0% { transform: scale(0.9); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .checkbox.checked:after {
+      content: '';
+      display: block;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+
+    .tip-selector {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .tip-btn {
+      padding: 12px 8px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--secondary-light);
+      background: var(--bg-primary);
+      color: var(--secondary);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-soft);
+    }
+
+    .tip-btn:hover {
+      border-color: var(--secondary);
+      background: var(--secondary-light);
+    }
+
+    .tip-btn.selected {
+      background: var(--secondary);
+      color: white;
+      border-color: var(--secondary);
+      transform: scale(1.02);
+    }
+
+    .input-row {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .input-row input[type="email"], 
+    .input-row input[type="number"] {
+      flex: 1;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border);
+      font-size: 1rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: var(--transition-soft);
+    }
+
+    .input-row input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(215, 38, 61, 0.08);
+    }
+
+    .input-row button {
+      padding: 14px 20px;
+      border-radius: var(--radius-sm);
+      border: none;
+      background: var(--secondary);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-soft);
+    }
+
+    .input-row button:hover {
+      background: var(--warning);
+      transform: translateY(-1px);
+    }
+
+    .receipt-list {
+      margin: 24px 0;
+      padding: 20px;
+      list-style: none;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border-light);
+    }
+
+    .receipt-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      font-size: 1.05rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .receipt-item:last-child {
+      border-bottom: none;
+    }
+
+    .receipt-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 0 8px 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      border-top: 2px solid var(--border);
+      margin-top: 8px;
+    }
+
+    .center {
+      text-align: center;
+      margin: 32px 0 0 0;
+    }
+
+    .info {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info i {
+      color: var(--primary);
+    }
+
+    .radio-group {
+      margin: 24px 0;
+    }
+
+    .radio-label {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      font-weight: 500;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      transition: var(--transition-soft);
+      border: 2px solid transparent;
+    }
+
+    .radio-label:hover {
+      background: var(--bg-secondary);
+      border-color: var(--border);
+    }
+
+    .radio {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--secondary-light);
+      border-radius: 50%;
+      margin-right: 16px;
+      position: relative;
+      display: inline-block;
+      background: var(--bg-primary);
+      transition: var(--transition-soft);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .radio.selected {
+      border-color: var(--primary);
+      background: var(--primary);
+      animation: radioSelectSoft 0.4s ease-out;
+    }
+
+    @keyframes radioSelectSoft {
+      0% { transform: scale(0.9); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .radio.selected:after {
+      content: '';
+      display: block;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 4px;
+      left: 4px;
+    }
+
+    .radio-text {
+      flex: 1;
+    }
+
+    .radio-description {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    .close-cart {
+      font-size: 1.3rem;
+      color: var(--success);
+      margin: 40px 0 0 0;
+      text-align: center;
+      font-weight: 700;
+      padding: 24px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      border: 2px solid var(--success-light);
+    }
+
+    .close-cart i {
+      display: block;
+      font-size: 2rem;
+      margin-bottom: 12px;
+      color: var(--success);
+    }
+
+    .success-animation {
+      animation: successPulseSoft 3s ease-in-out;
+    }
+
+    @keyframes successPulseSoft {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spinSoft 1.2s ease-in-out infinite;
+    }
+
+    @keyframes spinSoft {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 400px) {
+      .container { padding: 16px 12px; }
+      .order-card { padding: 16px; }
+      .tip-selector { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <i class="fas fa-utensils" style="margin-right: 8px; color: var(--primary);"></i>
+    Pay at the Table
+  </div>
+  <div class="container" id="app"></div>
+  <script>
+    // --- Data Model ---
+    let tableId = 12;
+    let userName = "You";
+    let orderItems = [
+      { id: 1, name: "Margherita Pizza", price: 12.00, paid: false, paidBy: null, description: "Fresh mozzarella, basil, tomato sauce" },
+      { id: 2, name: "Caesar Salad", price: 8.00, paid: false, paidBy: null, description: "Romaine lettuce, parmesan, croutons" },
+      { id: 3, name: "Lemonade", price: 3.00, paid: false, paidBy: null, description: "Fresh squeezed lemonade" }
+    ];
+    let selectedItems = [];
+    let selectedTip = 0;
+    let customTip = '';
+    let email = '';
+    let screen = 1; // 1:Checkout, 2:Table Home, 3:Select Pay, 4:Confirm, 5:Closed
+    let lastPaidItems = [];
+    let lastTip = 0;
+    let paymentMethod = 'table'; // 'now' or 'table'
+    let isLoading = false;
+
+    // --- Utility Functions ---
+    function formatMoney(n) {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      }).format(n);
+    }
+
+    function getUnpaidItems() {
+      return orderItems.filter(i => !i.paid);
+    }
+
+    function getPaidItems() {
+      return orderItems.filter(i => i.paid);
+    }
+
+    function getSelectedTotal() {
+      let total = selectedItems.reduce((sum, id) => {
+        let item = orderItems.find(i => i.id === id);
+        return sum + (item ? item.price : 0);
+      }, 0);
+      let tip = selectedTip === 'custom' ? parseFloat(customTip) || 0 : (selectedTip * total);
+      return total + tip;
+    }
+
+    function allPaid() {
+      return orderItems.every(i => i.paid);
+    }
+
+    function showLoading() {
+      isLoading = true;
+      render();
+    }
+
+    function hideLoading() {
+      isLoading = false;
+      render();
+    }
+
+    // --- Render Functions ---
+    function render() {
+      let html = '';
+      if (screen === 1) html = renderCheckout();
+      if (screen === 2) html = renderTableHome();
+      if (screen === 3) html = renderSelectPay();
+      if (screen === 4) html = renderConfirmation();
+      if (screen === 5) html = renderClosed();
+      
+      const app = document.getElementById('app');
+      app.innerHTML = html;
+    }
+
+    function renderCheckout() {
+      return `
+        <h1><i class="fas fa-credit-card" style="margin-right: 12px; color: var(--primary);"></i>Checkout</h1>
+        <h2>How would you like to pay for your order?</h2>
+        <div class="radio-group">
+          <label class="radio-label" onclick="selectPaymentMethod('now')">
+            <span class="radio${paymentMethod === 'now' ? ' selected' : ''}"></span>
+            <div class="radio-text">
+              <div><i class="fas fa-bolt" style="margin-right: 8px; color: var(--primary);"></i>Pay Now</div>
+              <div class="radio-description">Complete payment immediately</div>
+            </div>
+          </label>
+          <label class="radio-label" onclick="selectPaymentMethod('table')">
+            <span class="radio${paymentMethod === 'table' ? ' selected' : ''}"></span>
+            <div class="radio-text">
+              <div><i class="fas fa-table" style="margin-right: 8px; color: var(--primary);"></i>Pay at the Table</div>
+              <div class="radio-description">Pay when you're ready, right from your table</div>
+            </div>
+          </label>
+        </div>
+        <button class="button" onclick="continueToTable()" ${isLoading ? 'disabled' : ''}>
+          ${isLoading ? '<span class="loading"></span> Loading...' : 'Continue'}
+        </button>
+      `;
+    }
+
+    function renderTableHome() {
+      const unpaidCount = getUnpaidItems().length;
+      const paidCount = getPaidItems().length;
+      
+      return `
+        <h1><i class="fas fa-chair" style="margin-right: 12px; color: var(--primary);"></i>Table ${tableId}</h1>
+        <h2>Welcome! Here's your current order status.</h2>
+        
+        ${unpaidCount > 0 ? `
+          <div class="info">
+            <i class="fas fa-clock"></i>
+            ${unpaidCount} item${unpaidCount > 1 ? 's' : ''} pending payment
+          </div>
+        ` : ''}
+        
+        <ul class="order-list">
+          ${orderItems.map(item => `
+            <li class="order-card">
+              <div class="order-info">
+                <span class="order-name">${item.name}</span>
+                <span class="order-price">${formatMoney(item.price)}</span>
+              </div>
+              <span class="status-tag ${item.paid ? 'paid' : 'unpaid'}">
+                <i class="fas fa-${item.paid ? 'check' : 'clock'}" style="margin-right: 4px;"></i>
+                ${item.paid ? `Paid${item.paidBy ? ' by ' + item.paidBy : ''}` : 'Unpaid'}
+              </span>
+            </li>
+          `).join('')}
+        </ul>
+        
+        <button class="button secondary" onclick="orderMore()">
+          <i class="fas fa-plus" style="margin-right: 8px;"></i>Order More
+        </button>
+        <button class="button" onclick="goToPayment()" ${allPaid() ? 'disabled' : ''}>
+          <i class="fas fa-credit-card" style="margin-right: 8px;"></i>
+          Pay Now ${unpaidCount > 0 ? `(${unpaidCount} items)` : ''}
+        </button>
+        
+        ${allPaid() ? `
+          <div class="close-cart success-animation">
+            <i class="fas fa-check-circle"></i>
+            All items paid!<br>
+            <small>Staff have been notified</small>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function renderSelectPay() {
+      let unpaid = getUnpaidItems();
+      let paid = getPaidItems();
+      
+      return `
+        <h1><i class="fas fa-shopping-cart" style="margin-right: 12px; color: var(--primary);"></i>Select Items</h1>
+        <h2>Choose which items you'd like to pay for.</h2>
+        
+        ${unpaid.length > 0 ? `
+          <div class="info">
+            <i class="fas fa-info-circle"></i>
+            Select items to pay for
+          </div>
+        ` : ''}
+        
+        <ul class="order-list">
+          ${unpaid.map(item => `
+            <li class="order-card" onclick="toggleSelect(${item.id})" style="cursor: pointer;">
+              <span style="display:flex;align-items:center;">
+                <span class="checkbox${selectedItems.includes(item.id) ? ' checked' : ''}"></span>
+                <div class="order-info">
+                  <span class="order-name">${item.name}</span>
+                  <span class="order-price">${formatMoney(item.price)}</span>
+                </div>
+              </span>
+              <span class="status-tag unpaid">
+                <i class="fas fa-clock" style="margin-right: 4px;"></i>Unpaid
+              </span>
+            </li>
+          `).join('')}
+          
+          ${paid.map(item => `
+            <li class="order-card" style="opacity: 0.7;">
+              <div class="order-info">
+                <span class="order-name">${item.name}</span>
+                <span class="order-price">${formatMoney(item.price)}</span>
+              </div>
+              <span class="status-tag paid">
+                <i class="fas fa-check" style="margin-right: 4px;"></i>Paid${item.paidBy ? ' by ' + item.paidBy : ''}
+              </span>
+            </li>
+          `).join('')}
+        </ul>
+        
+        ${selectedItems.length > 0 ? `
+          <div class="info">
+            <i class="fas fa-percentage"></i>
+            Add a tip (optional)
+          </div>
+          <div class="tip-selector">
+            <button class="tip-btn${selectedTip===0.1?' selected':''}" onclick="selectTip(0.1)">10%</button>
+            <button class="tip-btn${selectedTip===0.15?' selected':''}" onclick="selectTip(0.15)">15%</button>
+            <button class="tip-btn${selectedTip===0.2?' selected':''}" onclick="selectTip(0.2)">20%</button>
+            <button class="tip-btn${selectedTip==='custom'?' selected':''}" onclick="selectTip('custom')">Custom</button>
+          </div>
+          
+          ${selectedTip==='custom' ? `
+            <div class="input-row">
+              <input type="number" min="0" step="0.01" placeholder="Enter tip amount" value="${customTip}" oninput="customTip=this.value;render()">
+            </div>
+          ` : ''}
+        ` : ''}
+        
+        <button class="button" onclick="paySelected()" ${selectedItems.length===0?'disabled':''}>
+          <i class="fas fa-credit-card" style="margin-right: 8px;"></i>
+          Pay ${selectedItems.length>0?formatMoney(getSelectedTotal()):''}
+        </button>
+        <button class="button secondary" onclick="goBack()">
+          <i class="fas fa-arrow-left" style="margin-right: 8px;"></i>Back
+        </button>
+      `;
+    }
+
+    function renderConfirmation() {
+      let paidItems = lastPaidItems;
+      let tip = lastTip;
+      let subtotal = paidItems.reduce((sum, item) => sum + item.price, 0);
+      let total = subtotal + tip;
+      
+      return `
+        <h1><i class="fas fa-check-circle" style="margin-right: 12px; color: var(--success);"></i>Payment Successful!</h1>
+        <h2>Here's your receipt for this payment.</h2>
+        
+        <ul class="receipt-list">
+          ${paidItems.map(item => `
+            <li class="receipt-item">
+              <span>${item.name}</span>
+              <span>${formatMoney(item.price)}</span>
+            </li>
+          `).join('')}
+          
+          ${tip > 0 ? `
+            <li class="receipt-item">
+              <span><i class="fas fa-heart" style="margin-right: 8px; color: var(--primary);"></i>Tip</span>
+              <span>${formatMoney(tip)}</span>
+            </li>
+          ` : ''}
+          
+          <li class="receipt-total">
+            <span>Total</span>
+            <span>${formatMoney(total)}</span>
+          </li>
+        </ul>
+        
+        <div class="input-row">
+          <input type="email" placeholder="Email receipt (optional)" value="${email}" oninput="email=this.value">
+          <button onclick="sendEmailReceipt()">
+            <i class="fas fa-paper-plane" style="margin-right: 4px;"></i>Send
+          </button>
+        </div>
+        
+        <button class="button" onclick="goBack()">
+          <i class="fas fa-list" style="margin-right: 8px;"></i>Check Order Status
+        </button>
+      `;
+    }
+
+    function renderClosed() {
+      return `
+        <h1><i class="fas fa-check-circle" style="margin-right: 12px; color: var(--success);"></i>All Items Paid</h1>
+        <h2>Thank you for dining with us!</h2>
+        
+        <div class="close-cart success-animation">
+          <i class="fas fa-check-circle"></i>
+          Your cart is closed<br>
+          <small>Staff have been notified</small>
+        </div>
+        
+        <button class="button" onclick="resetCart()">
+          <i class="fas fa-plus" style="margin-right: 8px;"></i>Order Again
+        </button>
+      `;
+    }
+
+    // --- Navigation Functions ---
+    function continueToTable() {
+      showLoading();
+      setTimeout(() => {
+        screen = 2;
+        hideLoading();
+        render();
+      }, 1000);
+    }
+
+    function goToPayment() {
+      selectedItems = [];
+      selectedTip = 0;
+      customTip = '';
+      screen = 3;
+      render();
+    }
+
+    function goBack() {
+      screen = 2;
+      render();
+    }
+
+    function orderMore() {
+      window.location.href = 'https://app.ordermonkey.com/welcome/6447fb68-86a5-4448-ba4f-a54c1dfd99eb/7d818c40a47e4b428d566ab248b822ec';
+    }
+
+    // --- Interaction Handlers ---
+    function toggleSelect(id) {
+      let idx = selectedItems.indexOf(id);
+      if (idx === -1) {
+        selectedItems.push(id);
+      } else {
+        selectedItems.splice(idx, 1);
+      }
+      render();
+    }
+
+    function selectTip(val) {
+      selectedTip = val;
+      if (val !== 'custom') customTip = '';
+      render();
+    }
+
+    function paySelected() {
+      showLoading();
+      
+      setTimeout(() => {
+        let paid = [];
+        for (let id of selectedItems) {
+          let item = orderItems.find(i => i.id === id);
+          if (item && !item.paid) {
+            item.paid = true;
+            item.paidBy = userName;
+            paid.push(item);
+          }
+        }
+        
+        lastPaidItems = paid;
+        lastTip = selectedTip === 'custom' ? parseFloat(customTip) || 0 : (selectedTip * paid.reduce((sum, i) => sum + i.price, 0));
+        selectedItems = [];
+        selectedTip = 0;
+        customTip = '';
+        
+        hideLoading();
+        screen = allPaid() ? 5 : 4;
+        render();
+      }, 1500);
+    }
+
+    function sendEmailReceipt() {
+      if (!email) {
+        alert('Please enter an email address');
+        return;
+      }
+      
+      showLoading();
+      setTimeout(() => {
+        alert(`Receipt sent to ${email}!`);
+        email = '';
+        hideLoading();
+        render();
+      }, 1000);
+    }
+
+    function resetCart() {
+      orderItems.forEach(i => { 
+        i.paid = false; 
+        i.paidBy = null; 
+      });
+      screen = 1;
+      render();
+    }
+
+    function selectPaymentMethod(method) {
+      paymentMethod = method;
+      render();
+    }
+
+    // --- Initial Render ---
+    render();
+    
+    // Expose functions for inline handlers
+    window.toggleSelect = toggleSelect;
+    window.selectTip = selectTip;
+    window.paySelected = paySelected;
+    window.sendEmailReceipt = sendEmailReceipt;
+    window.resetCart = resetCart;
+    window.selectPaymentMethod = selectPaymentMethod;
+    window.continueToTable = continueToTable;
+    window.goToPayment = goToPayment;
+    window.goBack = goBack;
+    window.orderMore = orderMore;
+  </script>
+</body>
+</html>
