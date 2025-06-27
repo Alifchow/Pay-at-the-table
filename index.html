@@ -180,6 +180,7 @@
       justify-content: space-between;
       transition: var(--transition-soft);
       border: 1px solid var(--border-light);
+      gap: 16px;
     }
 
     .order-card:hover {
@@ -502,6 +503,59 @@
       to { transform: rotate(360deg); }
     }
 
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .quantity-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .quantity-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: white;
+    }
+
+    .quantity-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .quantity-display {
+      min-width: 30px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .price-display {
+      min-width: 80px;
+      text-align: right;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .price-display.has-price {
+      color: var(--success);
+    }
+
+    .price-display.no-price {
+      color: transparent;
+    }
+
     @media (max-width: 400px) {
       .container { padding: 16px 12px; }
       .order-card { padding: 16px; }
@@ -716,24 +770,22 @@
             
             return `
               <li class="order-card">
-                <div class="order-info">
+                <div class="order-info" style="flex: 1; min-width: 0;">
                   <span class="order-name">${item.name}</span>
                   <span class="order-price">
                     ${formatMoney(item.price)} each
                     <br><small style="color: var(--text-secondary);">${paidQty} paid, ${unpaidQty} available</small>
                   </span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <button onclick="decreaseQuantity(${item.id})" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: bold; cursor: pointer;" ${selectedQty <= 0 ? 'disabled' : ''}>-</button>
-                    <span style="min-width: 30px; text-align: center; font-weight: 600;">${selectedQty}</span>
-                    <button onclick="increaseQuantity(${item.id})" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: bold; cursor: pointer;" ${selectedQty >= unpaidQty ? 'disabled' : ''}>+</button>
+                <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+                  <div class="quantity-controls">
+                    <button class="quantity-btn" onclick="decreaseQuantity(${item.id})" ${selectedQty <= 0 ? 'disabled' : ''}>-</button>
+                    <span class="quantity-display">${selectedQty}</span>
+                    <button class="quantity-btn" onclick="increaseQuantity(${item.id})" ${selectedQty >= unpaidQty ? 'disabled' : ''}>+</button>
                   </div>
-                  ${selectedQty > 0 ? `
-                    <span style="font-size: 0.9rem; color: var(--success); font-weight: 600;">
-                      ${formatMoney(item.price * selectedQty)}
-                    </span>
-                  ` : ''}
+                  <div class="price-display ${selectedQty > 0 ? 'has-price' : 'no-price'}">
+                    ${selectedQty > 0 ? formatMoney(item.price * selectedQty) : '$0.00'}
+                  </div>
                 </div>
               </li>
             `;
