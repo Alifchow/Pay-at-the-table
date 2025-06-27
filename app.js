@@ -31,7 +31,7 @@ let isLoading = false;
 function formatMoney(n) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'USD'
+    currency: 'CHF'
   }).format(n);
 }
 
