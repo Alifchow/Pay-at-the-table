@@ -520,11 +520,21 @@
     let tableId = 12;
     let userName = "You";
     let orderItems = [
-      { id: 1, name: "Margherita Pizza", price: 12.00, paid: false, paidBy: null, description: "Fresh mozzarella, basil, tomato sauce" },
-      { id: 2, name: "Caesar Salad", price: 8.00, paid: false, paidBy: null, description: "Romaine lettuce, parmesan, croutons" },
-      { id: 3, name: "Lemonade", price: 3.00, paid: false, paidBy: null, description: "Fresh squeezed lemonade" }
+      // Drinks
+      { id: 1, name: "Coca Cola", price: 3.50, quantity: 5, paidQuantity: 0, paidBy: null, description: "Classic Coca Cola" },
+      { id: 2, name: "Sprite", price: 3.50, quantity: 3, paidQuantity: 0, paidBy: null, description: "Lemon-lime soda" },
+      { id: 3, name: "Diet Coke", price: 3.50, quantity: 2, paidQuantity: 0, paidBy: null, description: "Sugar-free Coca Cola" },
+      { id: 4, name: "Lemonade", price: 4.00, quantity: 4, paidQuantity: 0, paidBy: null, description: "Fresh squeezed lemonade" },
+      { id: 5, name: "Iced Tea", price: 3.50, quantity: 3, paidQuantity: 0, paidBy: null, description: "Sweetened iced tea" },
+      { id: 6, name: "Coffee", price: 3.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Fresh brewed coffee" },
+      { id: 7, name: "Orange Juice", price: 4.50, quantity: 2, paidQuantity: 0, paidBy: null, description: "Fresh squeezed orange juice" },
+      { id: 8, name: "Apple Juice", price: 4.00, quantity: 1, paidQuantity: 0, paidBy: null, description: "Fresh apple juice" },
+      { id: 9, name: "Water", price: 2.50, quantity: 6, paidQuantity: 0, paidBy: null, description: "Bottled water" },
+      { id: 10, name: "Beer", price: 6.00, quantity: 4, paidQuantity: 0, paidBy: null, description: "Local craft beer" },
+      // Golf Fees
+      { id: 11, name: "Golf Fee", price: 25.00, quantity: 5, paidQuantity: 0, paidBy: null, description: "Per person golf course fee" }
     ];
-    let selectedItems = [];
+    let selectedItems = []; // Will store {id: itemId, quantity: selectedQty}
     let selectedTip = 0;
     let customTip = '';
     let email = '';
@@ -543,24 +553,37 @@
     }
 
     function getUnpaidItems() {
-      return orderItems.filter(i => !i.paid);
+      return orderItems.filter(i => i.paidQuantity < i.quantity);
     }
 
     function getPaidItems() {
-      return orderItems.filter(i => i.paid);
+      return orderItems.filter(i => i.paidQuantity > 0);
     }
 
     function getSelectedTotal() {
-      let total = selectedItems.reduce((sum, id) => {
-        let item = orderItems.find(i => i.id === id);
-        return sum + (item ? item.price : 0);
+      let total = selectedItems.reduce((sum, selection) => {
+        let item = orderItems.find(i => i.id === selection.id);
+        return sum + (item ? item.price * selection.quantity : 0);
       }, 0);
       let tip = selectedTip === 'custom' ? parseFloat(customTip) || 0 : (selectedTip * total);
       return total + tip;
     }
 
     function allPaid() {
-      return orderItems.every(i => i.paid);
+      return orderItems.every(i => i.paidQuantity >= i.quantity);
+    }
+
+    function getUnpaidQuantity(item) {
+      return item.quantity - item.paidQuantity;
+    }
+
+    function isItemFullyPaid(item) {
+      return item.paidQuantity >= item.quantity;
+    }
+
+    function getSelectedQuantity(itemId) {
+      let selection = selectedItems.find(s => s.id === itemId);
+      return selection ? selection.quantity : 0;
     }
 
     function showLoading() {
@@ -628,18 +651,27 @@
         ` : ''}
         
         <ul class="order-list">
-          ${orderItems.map(item => `
-            <li class="order-card">
-              <div class="order-info">
-                <span class="order-name">${item.name}</span>
-                <span class="order-price">${formatMoney(item.price)}</span>
-              </div>
-              <span class="status-tag ${item.paid ? 'paid' : 'unpaid'}">
-                <i class="fas fa-${item.paid ? 'check' : 'clock'}" style="margin-right: 4px;"></i>
-                ${item.paid ? `Paid${item.paidBy ? ' by ' + item.paidBy : ''}` : 'Unpaid'}
-              </span>
-            </li>
-          `).join('')}
+          ${orderItems.map(item => {
+            const unpaidQty = getUnpaidQuantity(item);
+            const paidQty = item.paidQuantity;
+            const totalQty = item.quantity;
+            
+            return `
+              <li class="order-card">
+                <div class="order-info">
+                  <span class="order-name">${item.name}</span>
+                  <span class="order-price">
+                    ${formatMoney(item.price)} each × ${totalQty} = ${formatMoney(item.price * totalQty)}
+                    ${paidQty > 0 ? `<br><small style="color: var(--success);">${paidQty} paid, ${unpaidQty} remaining</small>` : ''}
+                  </span>
+                </div>
+                <span class="status-tag ${paidQty > 0 ? 'paid' : 'unpaid'}">
+                  <i class="fas fa-${paidQty > 0 ? 'check' : 'clock'}" style="margin-right: 4px;"></i>
+                  ${paidQty > 0 ? `${paidQty}/${totalQty} Paid` : 'Unpaid'}
+                </span>
+              </li>
+            `;
+          }).join('')}
         </ul>
         
         <button class="button secondary" onclick="orderMore()">
@@ -666,39 +698,58 @@
       
       return `
         <h1><i class="fas fa-shopping-cart" style="margin-right: 12px; color: var(--primary);"></i>Select Items</h1>
-        <h2>Choose which items you'd like to pay for.</h2>
+        <h2>Choose which items and quantities you'd like to pay for.</h2>
         
         ${unpaid.length > 0 ? `
           <div class="info">
             <i class="fas fa-info-circle"></i>
-            Select items to pay for
+            Select items and quantities to pay for
           </div>
         ` : ''}
         
         <ul class="order-list">
-          ${unpaid.map(item => `
-            <li class="order-card" onclick="toggleSelect(${item.id})" style="cursor: pointer;">
-              <span style="display:flex;align-items:center;">
-                <span class="checkbox${selectedItems.includes(item.id) ? ' checked' : ''}"></span>
+          ${unpaid.map(item => {
+            const unpaidQty = getUnpaidQuantity(item);
+            const selectedQty = getSelectedQuantity(item.id);
+            const totalQty = item.quantity;
+            const paidQty = item.paidQuantity;
+            
+            return `
+              <li class="order-card">
                 <div class="order-info">
                   <span class="order-name">${item.name}</span>
-                  <span class="order-price">${formatMoney(item.price)}</span>
+                  <span class="order-price">
+                    ${formatMoney(item.price)} each
+                    <br><small style="color: var(--text-secondary);">${paidQty} paid, ${unpaidQty} available</small>
+                  </span>
                 </div>
-              </span>
-              <span class="status-tag unpaid">
-                <i class="fas fa-clock" style="margin-right: 4px;"></i>Unpaid
-              </span>
-            </li>
-          `).join('')}
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <button onclick="decreaseQuantity(${item.id})" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: bold; cursor: pointer;" ${selectedQty <= 0 ? 'disabled' : ''}>-</button>
+                    <span style="min-width: 30px; text-align: center; font-weight: 600;">${selectedQty}</span>
+                    <button onclick="increaseQuantity(${item.id})" style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: bold; cursor: pointer;" ${selectedQty >= unpaidQty ? 'disabled' : ''}>+</button>
+                  </div>
+                  ${selectedQty > 0 ? `
+                    <span style="font-size: 0.9rem; color: var(--success); font-weight: 600;">
+                      ${formatMoney(item.price * selectedQty)}
+                    </span>
+                  ` : ''}
+                </div>
+              </li>
+            `;
+          }).join('')}
           
           ${paid.map(item => `
             <li class="order-card" style="opacity: 0.7;">
               <div class="order-info">
                 <span class="order-name">${item.name}</span>
-                <span class="order-price">${formatMoney(item.price)}</span>
+                <span class="order-price">
+                  ${formatMoney(item.price)} each × ${item.quantity} = ${formatMoney(item.price * item.quantity)}
+                  <br><small style="color: var(--success);">${item.paidQuantity} paid</small>
+                </span>
               </div>
               <span class="status-tag paid">
-                <i class="fas fa-check" style="margin-right: 4px;"></i>Paid${item.paidBy ? ' by ' + item.paidBy : ''}
+                <i class="fas fa-check" style="margin-right: 4px;"></i>Fully Paid
               </span>
             </li>
           `).join('')}
@@ -736,7 +787,7 @@
     function renderConfirmation() {
       let paidItems = lastPaidItems;
       let tip = lastTip;
-      let subtotal = paidItems.reduce((sum, item) => sum + item.price, 0);
+      let subtotal = paidItems.reduce((sum, item) => sum + (item.price * item.paidQuantity), 0);
       let total = subtotal + tip;
       
       return `
@@ -746,8 +797,8 @@
         <ul class="receipt-list">
           ${paidItems.map(item => `
             <li class="receipt-item">
-              <span>${item.name}</span>
-              <span>${formatMoney(item.price)}</span>
+              <span>${item.name} × ${item.paidQuantity}</span>
+              <span>${formatMoney(item.price * item.paidQuantity)}</span>
             </li>
           `).join('')}
           
@@ -822,14 +873,33 @@
     }
 
     // --- Interaction Handlers ---
-    function toggleSelect(id) {
-      let idx = selectedItems.indexOf(id);
-      if (idx === -1) {
-        selectedItems.push(id);
-      } else {
-        selectedItems.splice(idx, 1);
+    function increaseQuantity(id) {
+      let item = orderItems.find(i => i.id === id);
+      if (!item) return;
+      
+      let unpaidQty = getUnpaidQuantity(item);
+      let currentSelected = getSelectedQuantity(id);
+      
+      if (currentSelected < unpaidQty) {
+        let selection = selectedItems.find(s => s.id === id);
+        if (selection) {
+          selection.quantity++;
+        } else {
+          selectedItems.push({id: id, quantity: 1});
+        }
+        render();
       }
-      render();
+    }
+
+    function decreaseQuantity(id) {
+      let selection = selectedItems.find(s => s.id === id);
+      if (selection) {
+        selection.quantity--;
+        if (selection.quantity <= 0) {
+          selectedItems = selectedItems.filter(s => s.id !== id);
+        }
+        render();
+      }
     }
 
     function selectTip(val) {
@@ -843,17 +913,26 @@
       
       setTimeout(() => {
         let paid = [];
-        for (let id of selectedItems) {
-          let item = orderItems.find(i => i.id === id);
-          if (item && !item.paid) {
-            item.paid = true;
-            item.paidBy = userName;
-            paid.push(item);
+        for (let selection of selectedItems) {
+          let item = orderItems.find(i => i.id === selection.id);
+          if (item) {
+            let unpaidQty = getUnpaidQuantity(item);
+            let toPay = Math.min(selection.quantity, unpaidQty);
+            
+            if (toPay > 0) {
+              item.paidQuantity += toPay;
+              item.paidBy = userName;
+              
+              // Create a copy for the receipt
+              let paidItem = {...item};
+              paidItem.paidQuantity = toPay;
+              paid.push(paidItem);
+            }
           }
         }
         
         lastPaidItems = paid;
-        lastTip = selectedTip === 'custom' ? parseFloat(customTip) || 0 : (selectedTip * paid.reduce((sum, i) => sum + i.price, 0));
+        lastTip = selectedTip === 'custom' ? parseFloat(customTip) || 0 : (selectedTip * paid.reduce((sum, i) => sum + (i.price * i.paidQuantity), 0));
         selectedItems = [];
         selectedTip = 0;
         customTip = '';
@@ -881,7 +960,7 @@
 
     function resetCart() {
       orderItems.forEach(i => { 
-        i.paid = false; 
+        i.paidQuantity = 0; 
         i.paidBy = null; 
       });
       screen = 1;
@@ -897,7 +976,8 @@
     render();
     
     // Expose functions for inline handlers
-    window.toggleSelect = toggleSelect;
+    window.increaseQuantity = increaseQuantity;
+    window.decreaseQuantity = decreaseQuantity;
     window.selectTip = selectTip;
     window.paySelected = paySelected;
     window.sendEmailReceipt = sendEmailReceipt;
