@@ -561,4 +561,69 @@ h2 {
   .container { padding: 16px 12px; }
   .order-card { padding: 16px; }
   .tip-selector { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Category Filters */
+.category-filters {
+  margin-bottom: 20px;
+}
+
+.filter-section {
+  margin-bottom: 16px;
+}
+
+.filter-section h4 {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+}
+
+.filter-section h4::before {
+  content: '';
+  width: 3px;
+  height: 16px;
+  background: var(--primary);
+  margin-right: 8px;
+  border-radius: 2px;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 80px;
+  justify-content: center;
+}
+
+.filter-btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--primary);
+  color: var(--text-primary);
+}
+
+.filter-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.filter-btn i {
+  font-size: 0.8rem;
 } 

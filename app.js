@@ -21,6 +21,7 @@ let selectedTip = 0;
 let customTip = '';
 let email = '';
 let payerName = '';
+let selectedCategory = ''; // NEW: Track selected category
 let screen = 1; // 1:Checkout, 2:Table Home, 3:Select Pay, 4:Confirm, 5:Closed
 let lastPaidItems = [];
 let lastTip = 0;
@@ -199,9 +200,27 @@ function renderSelectPay() {
   function quickSelect(percent) {
     selectedItems = [];
     const items = [...unpaid, ...partial];
-    let totalUnpaid = items.reduce((sum, item) => sum + (item.quantity - item.paidQuantity), 0);
+    
+    // If a category is selected, filter by that category
+    let filteredItems = items;
+    if (selectedCategory) {
+      filteredItems = items.filter(item => {
+        let itemCategory = '';
+        if (item.name.includes('Golf')) itemCategory = 'Golf Fees';
+        else if (item.name.includes('Beer') || item.name.includes('Coca') || item.name.includes('Sprite') || 
+                 item.name.includes('Diet') || item.name.includes('Lemonade') || item.name.includes('Tea') || 
+                 item.name.includes('Coffee') || item.name.includes('Juice') || item.name.includes('Water')) {
+          itemCategory = 'Drinks';
+        } else {
+          itemCategory = 'Other';
+        }
+        return itemCategory === selectedCategory;
+      });
+    }
+    
+    let totalUnpaid = filteredItems.reduce((sum, item) => sum + (item.quantity - item.paidQuantity), 0);
     let toPay = percent === 1 ? totalUnpaid : Math.floor(totalUnpaid * percent);
-    items.forEach(item => {
+    filteredItems.forEach(item => {
       let available = item.quantity - item.paidQuantity;
       if (toPay > 0) {
         let qty = Math.min(available, toPay);
@@ -212,34 +231,51 @@ function renderSelectPay() {
     render();
   }
 
-  // Category filter handlers
+  // Category selection handler
   function selectCategory(category) {
-    selectedItems = [];
-    const items = [...unpaid, ...partial];
-    items.forEach(item => {
-      let itemCategory = '';
-      if (item.name.includes('Golf')) itemCategory = 'Golf Fees';
-      else if (item.name.includes('Beer') || item.name.includes('Coca') || item.name.includes('Sprite') || 
-               item.name.includes('Diet') || item.name.includes('Lemonade') || item.name.includes('Tea') || 
-               item.name.includes('Coffee') || item.name.includes('Juice') || item.name.includes('Water')) {
-        itemCategory = 'Drinks';
-      } else {
-        itemCategory = 'Other';
-      }
-      
-      if (itemCategory === category) {
-        let available = item.quantity - item.paidQuantity;
-        if (available > 0) {
-          selectedItems.push({ id: item.id, quantity: available });
-        }
-      }
-    });
+    selectedCategory = selectedCategory === category ? '' : category; // Toggle selection
+    selectedItems = []; // Clear current selection
     render();
   }
 
   // Expose for inline use
   window.quickSelect = quickSelect;
   window.selectCategory = selectCategory;
+
+  // Category filters
+  const categoryFilters = `
+    <div class="category-filters">
+      <div class="filter-section">
+        <h4>Select Category:</h4>
+        <div class="filter-buttons">
+          <button class="filter-btn ${selectedCategory === 'Drinks' ? 'active' : ''}" onclick="selectCategory('Drinks')">
+            <i class="fas fa-glass-martini-alt"></i> Drinks
+          </button>
+          <button class="filter-btn ${selectedCategory === 'Golf Fees' ? 'active' : ''}" onclick="selectCategory('Golf Fees')">
+            <i class="fas fa-golf-ball"></i> Golf Fees
+          </button>
+          <button class="filter-btn ${selectedCategory === 'Other' ? 'active' : ''}" onclick="selectCategory('Other')">
+            <i class="fas fa-utensils"></i> Other
+          </button>
+        </div>
+      </div>
+      
+      <div class="filter-section">
+        <h4>Quick Pay ${selectedCategory ? `(${selectedCategory})` : '(All Items)'}:</h4>
+        <div class="filter-buttons">
+          <button class="filter-btn" onclick="quickSelect(1)">
+            <i class="fas fa-check-circle"></i> Pay All
+          </button>
+          <button class="filter-btn" onclick="quickSelect(0.5)">
+            <i class="fas fa-percentage"></i> Pay 50%
+          </button>
+          <button class="filter-btn" onclick="quickSelect(0.2)">
+            <i class="fas fa-percentage"></i> Pay 20%
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
 
   return `
     <h1><i class="fas fa-shopping-cart" style="margin-right: 12px; color: var(--primary);"></i>Select Items</h1>
@@ -251,29 +287,7 @@ function renderSelectPay() {
         Select items and quantities to pay for
       </div>
       
-      <div style="margin-bottom: 16px;">
-        <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-primary); font-size: 0.9rem;">
-          <i class="fas fa-filter" style="margin-right: 6px; color: var(--primary);"></i>Quick Select by Category:
-        </div>
-        <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">
-          ${categories.map(category => `
-            <button class="button secondary" style="flex:1;min-width:80px;padding:8px 12px;font-size:0.85rem;border-radius:var(--radius-sm);" onclick="selectCategory('${category}')">
-              ${category}
-            </button>
-          `).join('')}
-        </div>
-      </div>
-      
-      <div style="margin-bottom: 16px;">
-        <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-primary); font-size: 0.9rem;">
-          <i class="fas fa-percentage" style="margin-right: 6px; color: var(--primary);"></i>Quick Pay by Amount:
-        </div>
-        <div style="display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;">
-          <button class="button secondary" style="flex:1;min-width:80px;padding:8px 12px;font-size:0.85rem;border-radius:var(--radius-sm);" onclick="quickSelect(1)">Pay All</button>
-          <button class="button secondary" style="flex:1;min-width:80px;padding:8px 12px;font-size:0.85rem;border-radius:var(--radius-sm);" onclick="quickSelect(0.5)">Pay 50%</button>
-          <button class="button secondary" style="flex:1;min-width:80px;padding:8px 12px;font-size:0.85rem;border-radius:var(--radius-sm);" onclick="quickSelect(0.2)">Pay 20%</button>
-        </div>
-      </div>
+      ${categoryFilters}
     ` : ''}
     
     <ul class="order-list">
