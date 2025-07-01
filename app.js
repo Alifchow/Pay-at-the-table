@@ -6,10 +6,10 @@ let orderItems = [
   { id: 1, name: "Klassischer Burger", price: 6.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Klassischer Cheeseburger aus Rindfleisch mit einer Sauce", icon: "fas fa-hamburger" },
   { id: 2, name: "Bowl mit Poulet", price: 8.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "1 Basis & 2 Beilagen", icon: "fas fa-bowl-food" },
   // Drinks
-  { id: 3, name: "Coca-Cola", price: 2.00, quantity: 3, paidQuantity: 0, paidBy: null, description: "Coca-Cola", icon: "fab fa-coca-cola" },
+  { id: 3, name: "Coca-Cola", price: 2.00, quantity: 3, paidQuantity: 0, paidBy: null, description: "Coca-Cola", icon: "fas fa-glass-martini-alt" },
   { id: 4, name: "Valser Wasser - Still", price: 5.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Valser Wasser - Still", icon: "fas fa-tint" },
   { id: 5, name: "Valser mit", price: 5.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Valser mit", icon: "fas fa-tint" },
-  { id: 6, name: "Fanta Orange", price: 2.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Fanta Orange", icon: "fab fa-fanta" },
+  { id: 6, name: "Fanta Orange", price: 2.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Fanta Orange", icon: "fas fa-glass-martini-alt" },
   { id: 7, name: "Fusetea Black - Lemon", price: 2.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Fusetea Black - Lemon", icon: "fas fa-mug-hot" },
   { id: 8, name: "El Tony Mate", price: 2.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "El Tony Mate", icon: "fas fa-mug-hot" },
   { id: 9, name: "Rivella Blau", price: 5.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Rivella Blau", icon: "fas fa-wine-bottle" },
