@@ -2,18 +2,19 @@
 let tableId = 12;
 let userName = "You";
 let orderItems = [
+  // Food
+  { id: 1, name: "Klassischer Burger", price: 6.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Klassischer Cheeseburger aus Rindfleisch mit einer Sauce", icon: "fas fa-hamburger" },
+  { id: 2, name: "Bowl mit Poulet", price: 8.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "1 Basis & 2 Beilagen", icon: "fas fa-bowl-food" },
   // Drinks
-  { id: 1, name: "Coca Cola", price: 3.50, quantity: 5, paidQuantity: 0, paidBy: null, description: "Classic Coca Cola", icon: "fas fa-wine-bottle" },
-  { id: 2, name: "Sprite", price: 3.50, quantity: 3, paidQuantity: 0, paidBy: null, description: "Lemon-lime soda", icon: "fas fa-wine-bottle" },
-  { id: 3, name: "Diet Coke", price: 3.50, quantity: 2, paidQuantity: 0, paidBy: null, description: "Sugar-free Coca Cola", icon: "fas fa-wine-bottle" },
-  { id: 4, name: "Lemonade", price: 4.00, quantity: 4, paidQuantity: 0, paidBy: null, description: "Fresh squeezed lemonade", icon: "fas fa-glass-whiskey" },
-  { id: 5, name: "Iced Tea", price: 3.50, quantity: 3, paidQuantity: 0, paidBy: null, description: "Sweetened iced tea", icon: "fas fa-mug-hot" },
-  { id: 6, name: "Coffee", price: 3.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Fresh brewed coffee", icon: "fas fa-coffee" },
-  { id: 7, name: "Orange Juice", price: 4.50, quantity: 2, paidQuantity: 0, paidBy: null, description: "Fresh squeezed orange juice", icon: "fas fa-glass-whiskey" },
-  { id: 8, name: "Apple Juice", price: 4.00, quantity: 1, paidQuantity: 0, paidBy: null, description: "Fresh apple juice", icon: "fas fa-glass-whiskey" },
-  { id: 9, name: "Water", price: 2.50, quantity: 6, paidQuantity: 0, paidBy: null, description: "Bottled water", icon: "fas fa-tint" },
-  { id: 10, name: "Beer", price: 6.00, quantity: 4, paidQuantity: 0, paidBy: null, description: "Local craft beer", icon: "fas fa-beer" },
-  // Golf Fees
+  { id: 3, name: "Coca-Cola", price: 2.00, quantity: 3, paidQuantity: 0, paidBy: null, description: "Coca-Cola", icon: "fab fa-coca-cola" },
+  { id: 4, name: "Valser Wasser - Still", price: 5.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Valser Wasser - Still", icon: "fas fa-tint" },
+  { id: 5, name: "Valser mit", price: 5.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Valser mit", icon: "fas fa-tint" },
+  { id: 6, name: "Fanta Orange", price: 2.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Fanta Orange", icon: "fab fa-fanta" },
+  { id: 7, name: "Fusetea Black - Lemon", price: 2.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Fusetea Black - Lemon", icon: "fas fa-mug-hot" },
+  { id: 8, name: "El Tony Mate", price: 2.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "El Tony Mate", icon: "fas fa-mug-hot" },
+  { id: 9, name: "Rivella Blau", price: 5.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Rivella Blau", icon: "fas fa-wine-bottle" },
+  { id: 10, name: "Rivella Rot", price: 5.00, quantity: 2, paidQuantity: 0, paidBy: null, description: "Rivella Rot", icon: "fas fa-wine-bottle" },
+  // Golf Fee
   { id: 11, name: "Golf Fee", price: 25.00, quantity: 5, paidQuantity: 0, paidBy: null, description: "Per person golf course fee", icon: "fas fa-golf-ball" }
 ];
 let selectedItems = []; // Will store {id: itemId, quantity: selectedQty}
